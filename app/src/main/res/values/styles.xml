@@ -1,11 +1,15 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Base.AppTheme"></style>
+
+    <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--这个属性是主色-->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!--这个是状态栏颜色-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--是配色,如输入框线条颜色-->
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
 
 </resources>
