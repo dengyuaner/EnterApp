@@ -1,13 +1,11 @@
 package com.dy.enter.presenter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.text.TextUtils;
 
 import com.dy.enter.api.Api;
 import com.dy.enter.entity.Repo;
-import com.dy.enter.interfaces.ILoginPresenter;
-import com.dy.enter.interfaces.ILoginView;
-import com.dy.enter.viewmodel.UserModel;
+import com.dy.enter.interfaces.LoginContract;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import rx.Subscriber;
@@ -18,31 +16,26 @@ import rx.schedulers.Schedulers;
  * Created by dy on 2017/3/10 14:30.
  */
 
-public class LoginPresenter extends BasePresenter implements ILoginPresenter {
-    private UserModel mUser;
-    private ILoginView loginView;
+public class LoginPresenter extends RxPresenter<LoginContract.View> implements LoginContract.Presenter {
 
-    public LoginPresenter(Context context, ILoginView loginView) {
-        super(context);
-        this.loginView = loginView;
-        initUser();
-    }
 
-    private void initUser() {
-        mUser = new UserModel(loginView.getUsername(), loginView.getPassword());
+    public LoginPresenter(Activity activity) {
+        super(activity);
+        attachView((LoginContract.View) activity);
+
     }
 
     @Override
     public void login(String username, String password) {
         if (TextUtils.isEmpty(username)) {
-            loginView.setUserNameError("用户名错误");
+            mView.setUserNameError("用户名错误");
             return;
         }
         if (TextUtils.isEmpty(password)) {
-            loginView.setPasswordError("密码错误");
+            mView.setPasswordError("密码错误");
             return;
         }
-        loginView.showProgress();
+        mView.showProgress();
         Api.getInstance().login(username, password)
                 .compose(getActivityLifecycleProvider().<Repo<String>>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribeOn(Schedulers.io())//请求在io线程中
@@ -55,16 +48,16 @@ public class LoginPresenter extends BasePresenter implements ILoginPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        loginView.hideProgress();
+                        mView.hideProgress();
                     }
 
                     @Override
                     public void onNext(Repo<String> stringRepo) {
-                        loginView.hideProgress();
+                        mView.hideProgress();
                         if (stringRepo.getCode() == 200) {
-                            loginView.loginSuccess();
+                            mView.loginSuccess();
                         } else {
-                            loginView.loginFailure();
+                            mView.loginFailure();
                         }
                     }
                 });

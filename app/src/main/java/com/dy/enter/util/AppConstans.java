@@ -6,5 +6,5 @@ package com.dy.enter.util;
 
 public class AppConstans {
 
-    public static final String SERVER_BASE = "http://182.92.219.151:8889/erp-api/erp/";
+    public static final String SERVER_BASE = "http://192.168.0.102:8080/mvp/";
 }

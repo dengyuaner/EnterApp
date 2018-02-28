@@ -4,10 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.support.design.widget.TextInputLayout;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -15,11 +15,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.dy.enter.R;
-import com.dy.enter.interfaces.ILoginView;
+import com.dy.enter.interfaces.LoginContract;
 import com.dy.enter.presenter.LoginPresenter;
 
 
-public class LoginActivity extends BaseActivity implements ILoginView {
+public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     private View mProgressView;
     private View mLoginFormView;
@@ -38,12 +38,11 @@ public class LoginActivity extends BaseActivity implements ILoginView {
         passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
 
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.btnLogin);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button button = (Button) findViewById(R.id.btnLogin);
+        button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideKeyboard();
-
                 mLoginPresenter.login(usernameWrapper.getEditText().getText().toString(),
                         passwordWrapper.getEditText().getText().toString());
             }
@@ -53,7 +52,9 @@ public class LoginActivity extends BaseActivity implements ILoginView {
         mProgressView = findViewById(R.id.login_progress);
 
 
-        mLoginPresenter = new LoginPresenter(this, this);
+        mLoginPresenter = new LoginPresenter(this);
+
+
     }
 
     @Override
@@ -129,19 +130,12 @@ public class LoginActivity extends BaseActivity implements ILoginView {
         usernameWrapper.getEditText().requestFocus();
     }
 
-    @Override
-    public String getUsername() {
-        return usernameWrapper.getEditText().getText().toString();
-    }
-
-    @Override
-    public String getPassword() {
-        return passwordWrapper.getEditText().getText().toString();
-    }
 
     @Override
     public void loginSuccess() {
         Toast.makeText(this, "login success", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override

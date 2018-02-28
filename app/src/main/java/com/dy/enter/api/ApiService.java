@@ -19,8 +19,8 @@ public interface ApiService {
     @GET("organization/information")
     Observable<Repo<List<User>>> getCompanyInfo();
 
-    @POST("user/login")
-    Observable<Repo<String>> login(@Query("uid") String username, @Query("pwd") String password);
+    @POST("login")
+    Observable<Repo<String>> login(@Query("username") String username, @Query("password") String password);
 
     @Headers("Content-Type: text/xml")
     Observable<String> request();

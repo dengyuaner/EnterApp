@@ -1,8 +1,11 @@
 package com.dy.enter.ui;
 
+import android.animation.AnimatorInflater;
+import android.animation.StateListAnimator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.dy.enter.R;
 import com.dy.enter.api.Api;
@@ -26,6 +29,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        TextView textView = (TextView)findViewById(R.id.textView);
+//        StateListAnimator stateListAnimator = AnimatorInflater
+//                .loadStateListAnimator(this, R.animator.selector_animator);
+//
+//        textView.setStateListAnimator(stateListAnimator);
 
     }
 
@@ -41,49 +49,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void loadData() {
-        Api.getInstance().getCompanyInfo()
-                .flatMap(new Func1<Repo<List<User>>, Observable<Repo<String>>>() {
-                    //获取公司信息后登陆
-                    @Override
-                    public Observable<Repo<String>> call(Repo<List<User>> listRepo) {
-                        System.out.println(listRepo.getData().get(0).getOrgId());
-                        return Api.getInstance().login("GS0044", "888888");
-                    }
-                })
 
-                .subscribeOn(Schedulers.io())//请求在io线程中
-                .observeOn(Schedulers.io())//请求完成后在io中执行
-                .doOnNext(new Action1<Repo<String>>() {
-                    @Override
-                    public void call(Repo<String> stringRepo) {
-                        //保存账号密码
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(this.<Repo<String>>bindUntilEvent(ActivityEvent.DESTROY))
-                //在主线程中执行
-                .subscribe(new Subscriber<Repo<String>>() {
-                    @Override
-                    public void onCompleted() {
-                        dismissDialog();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dismissDialog();
-                    }
-
-                    @Override
-                    public void onNext(Repo<String> stringRepo) {
-
-                    }
-
-                    @Override
-                    public void onStart() {
-                        super.onStart();
-                        showDialog();
-                    }
-                });
     }
 
 }
